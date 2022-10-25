@@ -154,6 +154,93 @@ public class Test {
 
 /*OUTPUT*/
 
+/*
 10:51
+13:51
+  */          
+            
+            
+            
+            
+            
+          //  ####2
+             
+             
+             
+ //  I have implemented the setAlarm() method inside the Clock class, so that now it will print the updated time. Also, to implement the same in the WorldClock.java class we need to add the offset to the hours while we set the alarm. We have overriden the method inside the Worldclock.java class by adding the offset.  Here are the 3 updated classes.  ========================================================================  
+            import java.util.Date; 
+class Clock
+{      private int alarmHours;   
+             private int alarmMinutes;   
+             // getter for hours      
+             public int getHours() 
+             {          String timeStr = new Date().toString().split(" ")[3]; 
+                                    int hour = Integer.parseInt(timeStr.split(":")[0]);       
+                         return hour;     
+             } 
+             // getter for minutes      
+             public int getMinutes() 
+             {          String timeStr = new Date().toString().split(" ")[3];      
+                                      int minute = Integer.parseInt(timeStr.split(":")[1]);      
+                      return minute;     
+             }  
+             public String getTime()
+             {         if (alarmHours == -1 && alarmMinutes == -1)        
+                           {
+                                return String.format("%02d:%02d", getHours(), getMinutes()); 
+                           }     
+                       else {             if (getHours() >= alarmHours && getMinutes() >= alarmMinutes)
+                                                   {      alarmHours = -1;
+                                                      alarmMinutes = -1;                
+                                                     return String.format("%02d:%02d Alarm %c", getHours(), getMinutes(), '\u23F0');          
+                                                   } 
+                                           else    {                 
+                                                    return String.format("%02d:%02d", getHours(), getMinutes());             }    
+                                                   }   
+                            }  
+             public void setAlarm(int hours, int minutes) 
+             {          alarmHours = hours;      
+                       alarmMinutes = minutes;    
+             }  
+            
+  }
 
-        13:51
+//===========================================================
+
+ class WorldClock extends Clock {  
+ private int offset;
+ public WorldClock(int offset) 
+ {          this.offset = offset % 24;     
+ }   
+ 
+// @Override     
+public int getHours()
+ {  // fetching hours using super class getHours method   
+ int hr = super.getHours();     
+ hr += offset;  
+ if (hr > 23) {              hr = hr - 24;          } 
+ else if (hr < 0) {      hr = hr + 24;          }      
+ return hr;     
+ }  
+// @Override     
+ public void setAlarm(int hours, int minutes) 
+ {         super.setAlarm((hours + offset) % 24, minutes);     
+ } 
+ 
+ }
+
+//===========================================================
+
+ class Test {    
+ public static void main(String[] args) 
+ {  // creating a Clock with current time         
+ Clock clock = new Clock();     
+ WorldClock worldClock = new WorldClock(12);    
+ worldClock.setAlarm(0,12);         System.out.println(clock.getTime());   
+ System.out.println(worldClock.getTime());    
+ } 
+ }
+
+//===========================================================
+             
+             
